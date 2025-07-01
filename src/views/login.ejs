@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
   <meta charset="UTF-8">
@@ -18,15 +18,19 @@
       height="100" width="100"></animated-icons>
     <!-- <img src="icons/individual.svg" alt="Logo" class="logo"> -->
     <h1>Iniciar sesión</h1>
-    <form action="/login" method="POST">
-      <label for="username">Usuario:</label>
-      <input type="text" id="username" name="username" required>
+    <form action="/auth/login" method="POST">
+      <label for="username">Correo:</label>
+      <input type="email" id="username" name="username" required>
       <label for="password">Contraseña:</label>
       <input type="password" id="password" name="password" required>
       <div class="eye-icon-container">
         <img src="icons/eye-closed.svg" width="25px" height="25px" alt="ojo cerrado" class="eye-icon" onclick="togglePasswordVisibility()">
       </div>
       <button type="submit">Iniciar sesión</button>
+      <br>
+      <p style="margin: auto;">¿No tienes una cuenta? <a href="/register">Regístrate</a></p>
+      <p style="margin: auto;">¿Olvidaste tu contraseña? </p>
+      <a style="margin: auto;" href="/reset-password">Restablecer contraseña</a>
     </form>
   </div>
       <script>
