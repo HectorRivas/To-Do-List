@@ -70,14 +70,6 @@ app.get('/register', (req, res) => {
   )
 })
 
-app.get('/layout', (req, res) => {
-  res.render('layout',
-    {
-      title: 'Layout Page'
-    }
-  )
-})
-
 app.listen(PORT, () => {
   console.log(`App run inning on: http://localhost:${PORT}`)
 })

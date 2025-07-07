@@ -4,7 +4,6 @@ import bcrypt from 'bcrypt'
 export const createUser = async (req, res) => {
 	try {
 		const { name, lastname, email, password, confirmPassword } = req.body
-		console.log('Datos recibidos:', { name, lastname, email, password, confirmPassword })
 
 		// Validar que las contraseñas coincidan
 		if (password !== confirmPassword) {
@@ -23,7 +22,7 @@ export const createUser = async (req, res) => {
 				alert: 'warning'
 			});
 		}
-		console.log('Datos no completos')
+  
 		// Verificar si el usuario ya existe
 		const existingUser = await User.findOne({ email })
 		if (existingUser) {
@@ -33,17 +32,13 @@ export const createUser = async (req, res) => {
 				alert: 'warning'
 			});
 		}
-		console.log('Usuario ya existe')
 
 		// Encriptar la contraseña antes de guardarla
 		const salt = await bcrypt.genSalt(10)
 		const hashedPassword = await bcrypt.hash(password, salt)
-		// Reemplazar la contraseña en el objeto de usuario
-		req.body.password = hashedPassword
-		console.log('Contraseña encriptada:', req.body.password)
 
 		// Crear un nuevo usuario
-		const newUser = new User({ name, lastname, email, password })
+		const newUser = new User({ name, lastname, email, password: hashedPassword })
 		await newUser.save()
 
 		// Redirigir al inicio de sesión después del registro exitoso
@@ -62,22 +57,19 @@ export const createUser = async (req, res) => {
 	}
 }
 
-
-
 export const login = async (req, res) => {
 	// Obtener las credenciales del cuerpo de la solicitud
-	const { username, password } = req.body
-	console.log('Credenciales recibidas:', { username, password })
+	const { email, password } = req.body
 	// Validar que ambos campos estén completos
-	if (!username || !password) {
-		return res.status(400).render('login', {
+	if (!email || !password) {
+		return res.render('login', {
 			title: 'Iniciar sesión',
 			message: 'Por favor, completa todos los campos.',
 			alert: 'warning'
 		})
 	}
 	// Buscar al usuario por su nombre de usuario
-	const user = await User.findOne({ username })
+	const user = await User.findOne({ email })
 	if (!user) {
 		return res.render('login', {
 			title: 'Iniciar sesión',
@@ -94,12 +86,16 @@ export const login = async (req, res) => {
 			alert: 'warning'
 		})
 	}
-	// Si las credenciales son correctas, iniciar sesión
-	console.log('Inicio de sesión exitoso para el usuario:', user.username)
 
 	// Si las credenciales son correctas, redirigir a la página de tareas
 	res.render('layout', {
 		title: 'Tareas',
-		message: 'Has iniciado sesión correctamente.'
+		message: 'Has iniciado sesión correctamente.',
+    user: {
+      name: user.name,
+      lastname: user.lastname,
+      email: user.email
+    }
+    // alert: 'success'
 	})
 }
